@@ -11,13 +11,15 @@ greedy_policy = {
     for state in range(env.observation_space.n)
 }
 q_values = defaultdict(float)
+success_count = 0
+
 EPSILON = 0.5
 ALPHA = 0.05
 GAMMA = 1
 STEP_SLEEP = 0
 EPISODE_SLEEP = 0
 SUCCESS_SLEEP = 0
-success_count = 0
+SLOWDOWN_THRESHOLD = 100
 
 
 def policy(state):
@@ -42,7 +44,7 @@ while True:
             if reward == 1:
                 print("SUCCESS!")
                 success_count += 1
-                if success_count == 1000:
+                if success_count == SLOWDOWN_THRESHOLD:
                     EPSILON = 0
                     STEP_SLEEP = 0.2
                     EPISODE_SLEEP = 1
