@@ -12,6 +12,7 @@ greedy_policy = {
 }
 q_values = defaultdict(float)
 success_count = 0
+RENDER = False
 
 EPSILON = 0.5
 ALPHA = 0.05
@@ -31,24 +32,31 @@ def policy(state):
 while True:
     state = env.reset()
     action = policy(state)
-    env.render()
+    if RENDER:
+        env.render()
     while True:
         next_state, reward, done, _ = env.step(action)
         next_action = policy(next_state)
-        env.render()
+        if RENDER:
+            env.render()
         q_values[state, action] += \
             ALPHA * (reward + GAMMA * q_values[next_state, next_action]
                      - q_values[state, action])
         greedy_policy[state] = max(actions, key=lambda x: q_values[state, x])
         if done:
             if reward == 1:
-                print("SUCCESS!")
                 success_count += 1
+                if RENDER:
+                    print("SUCCESS!")
+                else:
+                    print(f"Successes: {success_count: 5}", end="\r")
                 if success_count == SLOWDOWN_THRESHOLD:
+                    RENDER = True
                     EPSILON = 0
                     STEP_SLEEP = 0.2
                     EPISODE_SLEEP = 1
                     SUCCESS_SLEEP = 3
+                    print(f"Successes: {success_count: 5}")
                 sleep(SUCCESS_SLEEP)
             sleep(EPISODE_SLEEP)
             break
