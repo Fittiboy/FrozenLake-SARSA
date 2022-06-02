@@ -15,7 +15,7 @@ RENDER = False
 EPSILON = 0.5
 ALPHA = 0.05
 GAMMA = 1
-SLOWDOWN_THRESHOLD = 10000
+SLOWDOWN_THRESHOLD = 100000
 
 
 def policy(state):
@@ -61,11 +61,12 @@ while True:
             if reward == 1:
                 success_count += 1
                 if not RENDER:
-                    print(f"Successes: {success_count: 5}", end="\r")
+                    print(f"Successes: {success_count: 6}", end="\r")
                 if success_count == SLOWDOWN_THRESHOLD:
                     RENDER = True
                     EPSILON = 0
-                    print(f"Successes: {success_count: 5}")
+                    print(f"Successes: {success_count: 6}")
+                    sleep(1)
             break
         action = next_action
         state = next_state
